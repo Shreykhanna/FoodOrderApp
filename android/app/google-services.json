@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "814581214597",
+    "project_id": "testdemo-f9c90",
+    "storage_bucket": "testdemo-f9c90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814581214597:android:17873b55003810432028ec",
+        "android_client_info": {
+          "package_name": "com.codepanda.testdemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq9viEDa7so60qoGLxdW0gGOrRksR-YTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814581214597:android:907d22729355487a2028ec",
+        "android_client_info": {
+          "package_name": "com.example.test_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq9viEDa7so60qoGLxdW0gGOrRksR-YTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
