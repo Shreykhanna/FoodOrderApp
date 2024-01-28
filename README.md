@@ -1,4 +1,4 @@
-# test_project
+# Online Food Order App
 
 A new Flutter project.
 
