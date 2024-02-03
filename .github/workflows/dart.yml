@@ -7,9 +7,9 @@ name: Dart
 
 on:
   push:
-    branches: 
-     - 'master', 
-     - 'feat*'
+    branches:
+      - 'master'
+      - 'feat*'
   pull_request:
     branches: ['master']
 
