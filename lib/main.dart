@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:test_project/firebase_options.dart';
+import 'package:test_project/view/common/confirm_order.dart';
 import 'package:test_project/view/common/post_task_view.dart';
 import 'package:test_project/view/drawer/drawer_widget.dart';
 import 'package:test_project/view/login/login_view.dart';
@@ -8,8 +10,10 @@ import 'package:test_project/view/register/register_view.dart';
 import 'package:test_project/view/user_view/create_profile_view.dart';
 import 'package:test_project/view/user_view/fetch_profile_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = 'stripePublishkey';
+  await Stripe.instance.applySettings();
   Firebase.initializeApp();
   runApp(MaterialApp(
     title: 'Flutter Demo',
@@ -40,6 +44,7 @@ void main() {
       '/create_profile_view_user/': (context) => const ProfileViewUser(),
       '/fetch_profile_view_user/': (context) => const FetchProfileView(),
       '/post_task_view/': (context) => const PostTaskView(),
+      '/confirm_order/': (context) => const ConfirmOrder(),
     },
   ));
 }

@@ -1,0 +1,7 @@
+{
+    "name": "aws-node-project",
+    "dependencies": {
+        "dotenv": "^16.4.1",
+        "stripe": "^14.14.0"
+    }
+}
