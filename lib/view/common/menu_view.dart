@@ -92,7 +92,10 @@ class _MenuViewState extends State<MenuView> {
                 Text(snapshot.data!.description, style: heading4),
                 Text(snapshot.data!.price, style: heading4),
                 ElevatedButton(
-                  onPressed: placeOrder,
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/confirm_order/', (route) => false);
+                  },
                   child: const Text("Place Order"),
                 ),
               ],
