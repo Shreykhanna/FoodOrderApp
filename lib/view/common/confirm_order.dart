@@ -20,12 +20,12 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
       _card, confirmOrderDetails) async {
     print("Card: ${_card}");
     var url = Uri.parse(
-        "https://klbf4lnshejgmlevbzjelmdngq0thfsz.lambda-url.ap-southeast-2.on.aws/");
+        "https://klbf4lnshejgmlevbzjelmdngq0thfsz.lambda-url.ap-southeast-2.on.aws");
     var response = await http.post(url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "card": _card,
-          "idempotencyKey": idempotencyKey,
+          "idempotencyKey": '',
           "confirmOrderDetails": confirmOrderDetails,
           "currency": "aud",
           "useStripeSdk":
