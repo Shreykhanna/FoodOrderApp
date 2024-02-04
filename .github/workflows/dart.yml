@@ -7,9 +7,11 @@ name: Dart
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - 'master'
+      - 'feat*'
   pull_request:
-    branches: [ "master" ]
+    branches: ['master']
 
 jobs:
   build:
@@ -17,12 +19,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-    
+
         name: Set up Flutter
       - uses: subosito/flutter-action@v2
         with:
-         flutter-version: 'stable'
-         flutter-arch: 'x64'
+          flutter-version: '>=3.2.5 <4.0.0'
 
       - name: Install dependencies
         run: flutter pub get
