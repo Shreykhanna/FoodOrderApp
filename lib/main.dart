@@ -9,10 +9,13 @@ import 'package:test_project/view/login/login_view.dart';
 import 'package:test_project/view/register/register_view.dart';
 import 'package:test_project/view/user_view/create_profile_view.dart';
 import 'package:test_project/view/user_view/fetch_profile_view.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = 'stripePublishkey';
+  await dotenv.load(fileName: ".env");
+  //...runapp
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISH_TEST_KEY']!;
   await Stripe.instance.applySettings();
   Firebase.initializeApp();
   runApp(MaterialApp(

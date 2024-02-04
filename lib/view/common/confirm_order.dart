@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
@@ -10,51 +12,48 @@ class ConfirmOrder extends StatefulWidget {
 }
 
 class _ConfirmOrderState extends State<ConfirmOrder> {
-  CardFieldInputDetails? _card;
-  // CardFieldInputDetails _card = {
-  //   "complete": false,
-  //   "last4": '',
-  //   'expiryMonth': '',
-  //   'expiryYear': '',
-  //   'brand': '',
-  //   'cvc': '',
-  //   'postalCode': ''
-  // };
+  var _card;
 
-  void handlePaymentCompletion(_card) async {
+  var idempotencyKey = Uuid();
+
+  Future<http.Response> handlePaymentCompletion(
+      _card, confirmOrderDetails) async {
     print("Card: ${_card}");
-    var url = Uri.https(
-        "klbf4lnshejgmlevbzjelmdngq0thfsz.lambda-url.ap-southeast-2.on.aws");
-    var response = await http.post(url, body: {
-      "card": {
-        "complete": true,
-        "last4": 4242,
-        "expiryMonth": 2,
-        " expiryYear": 42,
-      },
-      "currency": "aud",
-      "useStripeSdk":
-          "pk_test_51OevnaD4D7JQbRdXIJ4yMcJZxpzeBIr1kGjkBzdRvurd3gq4SkZuT33jTD0gk1N1BkhZWp6VqkLTCQfjoD8oN2QI005OI4BPMD",
-      "orderAmount": "100",
-      "type": "pay"
-    });
+    var url = Uri.parse(
+        "https://klbf4lnshejgmlevbzjelmdngq0thfsz.lambda-url.ap-southeast-2.on.aws/");
+    var response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "card": _card,
+          "idempotencyKey": idempotencyKey,
+          "confirmOrderDetails": confirmOrderDetails,
+          "currency": "aud",
+          "useStripeSdk":
+              "pk_test_51OevnaD4D7JQbRdXIJ4yMcJZxpzeBIr1kGjkBzdRvurd3gq4SkZuT33jTD0gk1N1BkhZWp6VqkLTCQfjoD8oN2QI005OI4BPMD",
+          "type": "pay"
+        }));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
+    if (response.statusCode == 200) {}
     // await Stripe.instance.confirmPayment( clientSecret['clientSecret'],
     //   PaymentMethodParams.card(
     //     paymentMethodData: PaymentMethodData(
     //       billingDetails: billingDetails,
-    //     ),
+    //     )
     //     options: PaymentMethodOptions(
     //       setupFutureUsage:
     //           _saveCard == true ? PaymentIntentsFutureUsage.OffSession : null,
     //     ),
     // )
     //);
+    return response;
   }
 
   @override
   Widget build(BuildContext context) {
+    final dynamic? confirmOrderDetails =
+        ModalRoute.of(context)?.settings.arguments;
+    print("confirm order data,${confirmOrderDetails}");
     return Scaffold(
         appBar: AppBar(
           title: const Text("Pay with a credit card"),
@@ -79,7 +78,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
               if (_card?.complete == true)
                 ElevatedButton(
                     onPressed: () {
-                      handlePaymentCompletion(_card);
+                      handlePaymentCompletion(_card, confirmOrderDetails);
                     },
                     child: const Text('Pay'))
             ],

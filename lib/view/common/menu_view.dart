@@ -5,23 +5,23 @@ import 'package:test_project/view/profile/style.dart';
 
 class MenuItem {
   final String postImage;
-  final String heading;
-  final String description;
-  final String price;
+  final String itemName;
+  final String itemDescription;
+  final int itemPrice;
 
   MenuItem({
     required this.postImage,
-    required this.heading,
-    required this.description,
-    required this.price,
+    required this.itemName,
+    required this.itemDescription,
+    required this.itemPrice,
   });
 
   factory MenuItem.fromMap(Map<String, dynamic> map) {
     return MenuItem(
       postImage: map['postImage'] ?? '',
-      heading: map['heading'] ?? '',
-      description: map['description'] ?? '',
-      price: map['price'] ?? '',
+      itemName: map['heading'] ?? '',
+      itemDescription: map['description'] ?? '',
+      itemPrice: map['price'] ?? 0,
     );
   }
 }
@@ -57,9 +57,9 @@ class _MenuViewState extends State<MenuView> {
         // Handle the case when no data is available
         return MenuItem(
           postImage: '',
-          heading: 'No data available',
-          description: '',
-          price: '',
+          itemName: 'No data available',
+          itemDescription: '',
+          itemPrice: 0,
         );
       }
     } catch (e) {
@@ -67,15 +67,17 @@ class _MenuViewState extends State<MenuView> {
       print("Error fetching data: $e");
       return MenuItem(
         postImage: '',
-        heading: 'Error fetching data',
-        description: '',
-        price: '',
+        itemName: 'Error fetching data',
+        itemDescription: '',
+        itemPrice: 0,
       );
     }
   }
 
-  void placeOrder() {
+  void placeOrder(customerOrder) {
     // Implement the logic for placing an order
+    Navigator.of(context)
+        .pushReplacementNamed('/confirm_order/', arguments: customerOrder);
   }
 
   @override
@@ -84,17 +86,21 @@ class _MenuViewState extends State<MenuView> {
       future: menuData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          dynamic customerOrder = {
+            "itemName": snapshot.data!.itemName,
+            "itemDescription": snapshot.data!.itemDescription,
+            "itemPrice": snapshot.data!.itemPrice
+          };
           return Scaffold(
             body: Column(
               children: [
                 // Image(image: NetworkImage(snapshot.data!.postImage)),
-                Text(snapshot.data!.heading, style: heading4),
-                Text(snapshot.data!.description, style: heading4),
-                Text(snapshot.data!.price, style: heading4),
+                Text(customerOrder['itemName']!, style: heading4),
+                Text(customerOrder['itemDescription']!, style: heading4),
+                Text(customerOrder['itemPrice']!.toString(), style: heading4),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/confirm_order/', (route) => false);
+                    placeOrder(customerOrder);
                   },
                   child: const Text("Place Order"),
                 ),

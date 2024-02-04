@@ -1,50 +1,60 @@
-require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY)
 
 module.exports.handler = async (event) => {
-  if(type==='pay'){
-    var { paymentMethodId, items, currency, useStripeSdk, orderAmount,type } =
-      event
-    orderAmount = 100
-    try {
-      if (paymentMethodId) {
-        const params = {
-          amount: orderAmount,
-          confirm: true,
-          confirmation_method: 'manual',
-          currency: currency,
-          payment_method: paymentMethodId,
-          use_stripe_id: useStripeSdk,
-        }
-        const intent = await stripe.paymentIntents.create(params)
-        console.log(`Intent:${intent}`)
-        return res.send(generateResponse(intent))
-      }
-      return res.sendStatus(400)
-    } catch (e) {
-      return res.send({ error: e.message })
+  var { _card, currency, useStripeSdk, confirmOrderDetails, type,idempotencyKey } = event
+  const calculateOrderAmount = (itemPrice) => {
+    return itemPrice * 100
   }
-}else if(type==='confirm'){
-  const { paymentIntentId } = req.body
+  if (type === 'pay') {
+    // const paymentMethod = await stripe.paymentMethods.create({
+    //   type:'card',
+    //   card:_card
+    // })
+    try {
+      const params = {
+        amount: calculateOrderAmount(confirmOrderDetails.itemPrice),
+        currency: currency,
+        // confirm: true,
+        payment_method_types: ['card'],
+        // automatic_payment_methods: {
+        //   enabled: true,
+        //   allow_redirects: 'never'
+        // }
+
+      }
+      const intent = await stripe.paymentIntents.create(params,{idempotencyKey:idempotencyKey})
+      console.log("intent", intent)
+      // const confirmIntent = await stripe.paymentIntents.confirm(intent.id,{ payment_method: intent.payment_method_types})
+      console.log("confirmIntent", confirmIntent)
+      console.log(`Intent:${intent}`)
+      return { "clientSecret": intent.client_secret }
+    }
+    catch (e) {
+      // return res.send({ error: e.message })
+    }
+  }
+  else if (type === 'confirm') {
+    const { paymentIntentId } = req.body
     try {
       if (paymentIntentId) {
-        const intent = await stripe.paymentIntents.confirm(paymentIntentId)
-        return res.send(generateResponse(intent))
+        const intent = await stripe.paymentIntents.confirm({ paymentIntentId })
+        return generateResponse(intent)
       }
-      return res.sendStatus(400)
-    } catch (e) {
-      return res.send({ error: e.message })
+      // return res.sendStatus(400)
     }
-}
+    catch (e) {
+      // return res.send({ error: e.message })
+    }
+  }
 };
 
-const generateResponse = function (intent) {
+const generateResponse = function(intent) {
   switch (intent.status) {
     case 'requires_action':
       return {
         clientSecret: intent.clientSecret,
-        requiresAction: true,
-        status: intent.status,
+          requiresAction: true,
+          status: intent.status,
       }
     case 'requires_payment_method':
       return {
