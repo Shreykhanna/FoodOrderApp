@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:test_project/view/common/menu_view.dart';
 import 'package:test_project/view/login/components/background_component.dart';
 import 'package:test_project/view/login/components/circular_component.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,6 +44,14 @@ class LoginViewState extends State<LoginView> {
           await FirebaseAuth.instance.signInWithCredential(credential);
       final User? user = userCredential.user;
 
+      if (user != null) {
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MenuView()),
+          );
+        }
+      }
       // Use the user object for further operations or navigate to a new screen.
     } catch (e) {
       print(e.toString());

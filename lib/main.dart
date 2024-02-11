@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:test_project/firebase_options.dart';
 import 'package:test_project/view/common/confirm_order.dart';
+import 'package:test_project/view/common/menu_view.dart';
 import 'package:test_project/view/common/post_task_view.dart';
 import 'package:test_project/view/drawer/drawer_widget.dart';
 import 'package:test_project/view/login/login_view.dart';
@@ -45,6 +46,7 @@ void main() async {
       '/register/': (context) => const RegisterView(),
       '/create_profile_view_user/': (context) => const ProfileViewUser(),
       '/fetch_profile_view_user/': (context) => const FetchProfileView(),
+      "/food_menu/": (context) => const MenuView(),
       '/post_task_view/': (context) => const PostTaskView(),
       '/confirm_order/': (context) => const ConfirmOrder(),
     },
