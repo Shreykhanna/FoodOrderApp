@@ -16,17 +16,16 @@ class _PostTaskViewState extends State<PostTaskView> {
   late final TextEditingController heading = TextEditingController();
   late final TextEditingController description = TextEditingController();
   late final TextEditingController price = TextEditingController();
-
   final user = FirebaseFirestore.instance.collection('users').doc('ShreyKh');
   List<File>? _profileImages = [];
 
   Future<void> _getMultiImage() async {
     final picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage(
+    final List<XFile> pickedFiles = await picker.pickMultiImage(
       requestFullMetadata: true,
     );
     setState(() {
-      if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      if (pickedFiles.isNotEmpty) {
         _profileImages =
             pickedFiles.map((XFile file) => File(file.path)).toList();
         print(_profileImages);
@@ -44,7 +43,8 @@ class _PostTaskViewState extends State<PostTaskView> {
     final dataObject = {
       "heading": heading.text,
       "description": description.text,
-      "price": price.text
+      "price": price.text,
+      "itemImage": _profileImages
     };
 
     user.update({"post": dataObject}).then(
@@ -67,7 +67,7 @@ class _PostTaskViewState extends State<PostTaskView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post Task'),
+        title: const Text('Add your menu'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -98,21 +98,30 @@ class _PostTaskViewState extends State<PostTaskView> {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                  onTap: _getMultiImage,
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.attach_file,
-                        size: 50,
-                        color:
-                            _profileImages != null && _profileImages!.isNotEmpty
+                onTap: _getMultiImage,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _profileImages != null && _profileImages!.isNotEmpty
+                        ? Image.file(
+                            _profileImages![0],
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : Icon(
+                            Icons.attach_file,
+                            size: 50,
+                            color: _profileImages != null &&
+                                    _profileImages!.isNotEmpty
                                 ? Colors.blue
                                 : null,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text('Attach your dish photos'),
-                    ],
-                  )),
+                          ),
+                    const SizedBox(height: 8),
+                    const Text('Attach your dish photos'),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: uploadData,

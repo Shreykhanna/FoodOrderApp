@@ -1,16 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:test_project/view/profile/style.dart';
+import 'package:test_project/view/common/card_component.dart';
+import 'package:test_project/view/common/search_bar_component.dart';
+import 'package:test_project/view/drawer/drawer_widget.dart';
+import 'package:test_project/view/login/components/background_component.dart';
+import 'package:test_project/view/login/components/circular_component.dart';
 
 class MenuItem {
-  final String postImage;
+  final String itemImage;
   final String itemName;
   final String itemDescription;
   final int itemPrice;
 
   MenuItem({
-    required this.postImage,
+    required this.itemImage,
     required this.itemName,
     required this.itemDescription,
     required this.itemPrice,
@@ -18,7 +22,7 @@ class MenuItem {
 
   factory MenuItem.fromMap(Map<String, dynamic> map) {
     return MenuItem(
-      postImage: map['postImage'] ?? '',
+      itemImage: map['itemImage'] ?? '',
       itemName: map['heading'] ?? '',
       itemDescription: map['description'] ?? '',
       itemPrice: map['price'] ?? 0,
@@ -56,7 +60,7 @@ class _MenuViewState extends State<MenuView> {
       } else {
         // Handle the case when no data is available
         return MenuItem(
-          postImage: '',
+          itemImage: '',
           itemName: 'No data available',
           itemDescription: '',
           itemPrice: 0,
@@ -66,7 +70,7 @@ class _MenuViewState extends State<MenuView> {
       // Handle errors during data fetching
       print("Error fetching data: $e");
       return MenuItem(
-        postImage: '',
+        itemImage: '',
         itemName: 'Error fetching data',
         itemDescription: '',
         itemPrice: 0,
@@ -76,6 +80,7 @@ class _MenuViewState extends State<MenuView> {
 
   void placeOrder(customerOrder) {
     // Implement the logic for placing an order
+    print("Customer order confirm $customerOrder");
     Navigator.of(context)
         .pushReplacementNamed('/confirm_order/', arguments: customerOrder);
   }
@@ -87,26 +92,28 @@ class _MenuViewState extends State<MenuView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           dynamic customerOrder = {
+            "itemImage": snapshot.data!.itemImage,
             "itemName": snapshot.data!.itemName,
             "itemDescription": snapshot.data!.itemDescription,
             "itemPrice": snapshot.data!.itemPrice
           };
-          return Scaffold(
-            body: Column(
-              children: [
-                // Image(image: NetworkImage(snapshot.data!.postImage)),
-                Text(customerOrder['itemName']!, style: heading4),
-                Text(customerOrder['itemDescription']!, style: heading4),
-                Text(customerOrder['itemPrice']!.toString(), style: heading4),
-                ElevatedButton(
-                  onPressed: () {
-                    placeOrder(customerOrder);
-                  },
-                  child: const Text("Place Order"),
-                ),
-              ],
-            ),
-          );
+          return MaterialApp(
+              home: SafeArea(
+                  child: Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Menu'),
+                      ),
+                      drawer: const Drawer(
+                        child: DrawerWidget(),
+                      ),
+                      body: Stack(children: [
+                        const BackgroundComponent(),
+                        const CircularComponent(),
+                        // const SearchBarComponent(),
+                        CardComponent(
+                            customerOrder: customerOrder,
+                            placeOrderCallback: placeOrder)
+                      ]))));
         } else if (snapshot.hasError) {
           return Scaffold(
             body: Center(

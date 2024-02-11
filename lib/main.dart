@@ -57,10 +57,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      drawer: const Drawer(
-        child: DrawerWidget(),
-      ),
       body: FutureBuilder(
           future: Firebase.initializeApp(
               options: DefaultFirebaseOptions.currentPlatform),
@@ -84,7 +80,7 @@ class HomePage extends StatelessWidget {
             //     return const Text('Done');
             //   default:
             //     return const CircularProgressIndicator();
-            return const FetchProfileView();
+            return const LoginView();
           }),
     );
   }

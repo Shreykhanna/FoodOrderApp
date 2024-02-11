@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_project/view/accountDetails/account_details.dart';
 import 'package:test_project/view/common/menu_view.dart';
 import 'package:test_project/view/common/post_task_view.dart';
 import 'package:test_project/view/tasker_view/profile_view.dart';
@@ -30,6 +31,11 @@ class DrawerWidget extends StatelessWidget {
             }
           },
         ),
+        const Divider(
+          color: Colors.grey,
+          height: 1,
+          thickness: 0.5,
+        ),
         ListTile(
           title: const Text("Menu"),
           onTap: () {
@@ -41,7 +47,24 @@ class DrawerWidget extends StatelessWidget {
               print(e);
             }
           },
-        )
+        ),
+        const Divider(
+          color: Colors.grey,
+          height: 1,
+          thickness: 0.5,
+        ),
+        ListTile(
+          title: const Text("Account Details"),
+          onTap: () {
+            try {
+              Navigator.pop(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const AccountDetails()));
+            } catch (e) {
+              print(e);
+            }
+          },
+        ),
       ],
     ));
   }

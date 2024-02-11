@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:test_project/view/drawer/drawer_widget.dart';
 import 'package:test_project/view/profile/profile_details.dart';
 import 'package:test_project/view/profile/profile_subheader.dart';
 import 'package:test_project/view/profile/profile_header.dart';
@@ -73,11 +74,17 @@ class _FetchProfileViewState extends State<FetchProfileView> {
           // }
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            return const MaterialApp(
+            return MaterialApp(
               home: SafeArea(
                 child: Scaffold(
-                    backgroundColor: Color.fromARGB(248, 251, 202, 25),
-                    body: Stack(
+                    appBar: AppBar(
+                      title: const Text('Profile'),
+                    ),
+                    drawer: const Drawer(
+                      child: DrawerWidget(),
+                    ),
+                    backgroundColor: const Color.fromARGB(248, 251, 202, 25),
+                    body: const Stack(
                       children: [
                         ProfileSubHeader(),
                         ProfileHeader(),

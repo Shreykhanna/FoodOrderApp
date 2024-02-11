@@ -42,6 +42,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       // Assuming there is only one document in the collection, you might need to adjust this logic based on your data structure
       if (snapshot.docs.isNotEmpty) {
         Map<String, dynamic> data = snapshot.docs.first.data();
+        print("DATA,${data}");
         setState(() {
           // Update your state variables with the fetched data
           profileImage = data['profileImageUrl'] ?? '';
